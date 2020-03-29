@@ -1,15 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ScriptRunner
 {
     class Program
     {
+        [STAThread]
         static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Task.Run(Run);
+            Application.Run(new MainForm());
+        }
+
+
+        public static void Run()
         {
             var jsFiles = new List<string>();
             var args = Environment.GetCommandLineArgs();
@@ -29,7 +41,7 @@ namespace ScriptRunner
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine($@"ERROR:加载文件：{exception}");
+                    MainForm.WriteLine($@"ERROR:加载文件：{exception}");
                 }
             }
 
@@ -50,6 +62,9 @@ namespace ScriptRunner
 
                 File.WriteAllText(JsCode,allCode.ToString(),Encoding.UTF8);
             }
+            FileStream fs = new FileStream("runner.log", FileMode.Append);
+            StreamWriter sw = new StreamWriter(fs);
+            Console.SetOut(sw);
 
             using (var code = new ScriptRunner())
             {
@@ -57,8 +72,9 @@ namespace ScriptRunner
                 code.Run();
             }
 
+
             // 超时未服务的，自动退出
-            System.Environment.Exit(0);
+            Application.Exit();
         }
 
         public static string JsCode = "runner.js";

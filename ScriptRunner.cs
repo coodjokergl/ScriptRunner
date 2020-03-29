@@ -34,7 +34,7 @@ namespace ScriptRunner
                 {
                     if (IsExecuting)
                     {
-                        Console.WriteLine("上一任务未执行完成，此次轮空");
+                        MainForm.WriteLine("上一任务未执行完成，此次轮空");
                         return;
                     }
                     IsExecuting = true;
@@ -47,7 +47,7 @@ namespace ScriptRunner
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine($@"ERROR runner script:{exception}");
+                    MainForm.WriteLine($@"ERROR runner script:{exception}");
                     IsExecuting = false;
                     IsRun = false;
                 }
@@ -64,7 +64,7 @@ namespace ScriptRunner
 
         public void StartUp()
         {   
-            Console.WriteLine("加载脚本...");
+            MainForm.WriteLine("加载脚本...");
             V8.Execute(Code); //加载代码
 
             CaptureImage screen = Capture.Screen(V8.Script.屏幕());
@@ -75,13 +75,13 @@ namespace ScriptRunner
                 try
                 {
                     Proxy.系统.Img = () => bmp;
-                    Console.WriteLine("脚本执行中...");
+                    MainForm.WriteLine("脚本执行中...");
                     V8.Script.运行();
-                    Console.WriteLine("脚本执行结束");
+                    MainForm.WriteLine("脚本执行结束");
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine($@"ERROR runner caller : {exception}");
+                    MainForm.WriteLine($@"ERROR runner caller : {exception}");
                 }
                 finally
                 {
@@ -110,7 +110,7 @@ namespace ScriptRunner
                 Thread.Sleep(1000);
             }
 
-            Console.WriteLine("即将退出...");
+            MainForm.WriteLine("即将退出...");
             Thread.Sleep(5000);
         }
 

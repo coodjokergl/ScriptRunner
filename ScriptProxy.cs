@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Media.Effects;
 using FlaUI.Core.Input;
 using FlaUI.Core.WindowsAPI;
@@ -19,6 +20,9 @@ namespace ScriptRunner
     {
         public MouseProxy 鼠标 { get; } = new MouseProxy();
         public OsSystem 系统 { get; } = new OsSystem();
+
+        public KeyBoard 键盘 { get; } = new KeyBoard();
+
         public void 延迟(int delay)
         {
             Thread.Sleep(delay);
@@ -56,7 +60,7 @@ namespace ScriptRunner
         }
     }
 
-    public class 键盘
+    public class KeyBoard
     {
         
         public void 开始按键(VirtualKeyShort virtualKey)
@@ -82,7 +86,7 @@ namespace ScriptRunner
         /// </summary>
         public void 退出()
         {
-            ScriptRunner.IsRun = false;
+            Application.Exit();
         }
 
         /// <summary>
