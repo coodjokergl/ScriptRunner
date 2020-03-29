@@ -97,10 +97,13 @@ namespace ScriptRunner
         public string 图片特征(string rectVal)
         {
             var img = Img();
-            var rect = Helper.GetRectangle(rectVal);
-            using (var bmp = img.Clone(rect,img.PixelFormat))
+            using (img)
             {
-                return HashNormalHelper.Hash(bmp);
+                var rect = Helper.GetRectangle(rectVal);
+                using (var bmp = img.Clone(rect,img.PixelFormat))
+                {
+                    return HashNormalHelper.Hash(bmp);
+                }
             }
         }
 
@@ -110,5 +113,10 @@ namespace ScriptRunner
         }
 
         internal Func<Bitmap> Img;
+
+        public void 日志(object obj)
+        {
+            MainForm.WriteLine(obj);
+        }
     }
 }

@@ -64,6 +64,7 @@ namespace ScriptRunner
             }
             FileStream fs = new FileStream("runner.log", FileMode.Append);
             StreamWriter sw = new StreamWriter(fs);
+            sw.AutoFlush = true;
             Console.SetOut(sw);
 
             using (var code = new ScriptRunner())

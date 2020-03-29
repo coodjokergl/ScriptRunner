@@ -25,8 +25,6 @@ namespace ScriptRunner
             V8.AddHostObject("代理",Proxy);
             V8.AddHostObject("库", new HostTypeCollection("mscorlib", "System.Core"));
             V8.AddHostType("键盘",typeof(VirtualKeyShort));
-
-            V8.AddHostType("Console", typeof(Console));
            
             UiTimer = new System.Threading.Timer(new TimerCallback((state =>
             {
@@ -67,26 +65,26 @@ namespace ScriptRunner
             MainForm.WriteLine("加载脚本...");
             V8.Execute(Code); //加载代码
 
-            CaptureImage screen = Capture.Screen(V8.Script.屏幕());
-            var 当前工作区域 = 工作区域 == System.Drawing.Rectangle.Empty ?
-                new System.Drawing.Rectangle(System.Drawing.Point.Empty,screen.Bitmap.Size) : 工作区域;
-            using (var bmp = screen.Bitmap.Clone(当前工作区域, screen.Bitmap.PixelFormat))
+            try
             {
-                try
+                Proxy.系统.Img = () =>
                 {
-                    Proxy.系统.Img = () => bmp;
-                    MainForm.WriteLine("脚本执行中...");
-                    V8.Script.运行();
-                    MainForm.WriteLine("脚本执行结束");
-                }
-                catch (Exception exception)
-                {
-                    MainForm.WriteLine($@"ERROR runner caller : {exception}");
-                }
-                finally
-                {
-                    Proxy.系统.Img = null;
-                }
+                    CaptureImage screen = Capture.Screen(V8.Script.屏幕());
+                    var 当前工作区域 = 工作区域 == System.Drawing.Rectangle.Empty ?
+                        new System.Drawing.Rectangle(System.Drawing.Point.Empty,screen.Bitmap.Size) : 工作区域;
+                    return screen.Bitmap.Clone(当前工作区域, screen.Bitmap.PixelFormat);
+                };
+                MainForm.WriteLine("脚本执行中...");
+                V8.Script.运行();
+                MainForm.WriteLine("脚本执行结束");
+            }
+            catch (Exception exception)
+            {
+                MainForm.WriteLine($@"ERROR runner caller : {exception}");
+            }
+            finally
+            {
+                Proxy.系统.Img = null;
             }
         }
 
